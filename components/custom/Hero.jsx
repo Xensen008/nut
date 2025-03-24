@@ -1,14 +1,19 @@
 "use client";
+import { MessagesContext } from "@/context/MessagesContext";
 import Lookups from "@/data/Lookups";
 import { ArrowRight, Link } from "lucide-react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const Hero = () => {
   const [userInput, setUserInput] = useState("");
+  const {messages, setMessages} = useContext(MessagesContext)
 
-  // const onGenerate=()=>[
-
-  // ]
+  const onGenerate=(input)=>[
+     setMessages({
+       role:"user",
+       content:input
+     })
+  ]
   
   return (
     <div className="flex flex-col items-center px-4 sm:px-6 py-8 md:py-12 mt-10 md:mt-16 lg:mt-20 xl:mt-24 gap-3 md:gap-4">
@@ -23,6 +28,7 @@ const Hero = () => {
           />
           {userInput && (
             <ArrowRight 
+              onClick={()=>onGenerate(userInput)}
               className="bg-blue-600 hover:bg-blue-500 p-2 sm:p-3 h-8 w-8 rounded-md cursor-pointer text-white transition-all duration-300 transform hover:scale-105 flex-shrink-0 mt-1" 
             />
           )}
@@ -37,6 +43,7 @@ const Hero = () => {
           {Lookups.SUGGSTIONS.map((suggestion)=>{
               return (
                 <h2 
+                  onClick={()=>onGenerate(suggestion)}
                   className="p-1 px-2 md:px-3 border border-gray-700 rounded-full text-xs sm:text-sm text-gray-400 hover:text-white hover:bg-gray-800 hover:border-gray-500 transition-all duration-300 cursor-pointer" 
                   key={suggestion}
                 >
