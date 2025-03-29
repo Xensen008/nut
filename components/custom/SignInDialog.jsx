@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
     Dialog,
     DialogContent,
@@ -9,13 +9,36 @@ import {
 import Lookups from '@/data/Lookups'
 import { Button } from '../ui/button'
 import { FcGoogle } from 'react-icons/fc'
+import { useGoogleLogin } from '@react-oauth/google'
+import { UserDetailContext } from '@/context/UserDetailContext'
+import axios from 'axios'
+
+
+
 
 function SignInDialog({ openDialog, closeDialog }) {
+    const { userDetail, setUserDetail } = useContext(UserDetailContext)
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            console.log(tokenResponse);
+            const userInfo = await axios.get(
+                'https://www.googleapis.com/oauth2/v3/userinfo',
+                { headers: { Authorization: 'Bearer ' + tokenResponse?.access_token } },
+            );
+
+            console.log(userInfo);
+            setUserDetail(userInfo?.data);
+            closeDialog(false); 
+        },
+        onError: errorResponse => console.log(errorResponse),
+    });
+
+
     return (
         <Dialog open={openDialog} onOpenChange={closeDialog}>
             <DialogContent className="sm:max-w-md border border-gray-800 bg-gray-950/90 backdrop-blur-md shadow-xl rounded-xl overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-900 to-gray-700"></div>
-                
+
                 <DialogHeader className="space-y-3 pb-4">
                     {/* Icon */}
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-900 mb-2">
@@ -24,23 +47,23 @@ function SignInDialog({ openDialog, closeDialog }) {
                             <circle cx="12" cy="7" r="4"></circle>
                         </svg>
                     </div>
-                    
+
                     <DialogTitle className="text-center text-xl font-bold tracking-tight">
                         {Lookups.SIGNIN_HEADING}
                     </DialogTitle>
-                    
+
                     <div className="text-center text-sm text-gray-400 px-6">
                         {Lookups.SIGNIN_SUBHEADING}
                     </div>
                 </DialogHeader>
-                
+
                 <div className="flex flex-col items-center justify-center gap-4 py-2">
-                    <Button className="bg-gray-900 hover:bg-gray-800 text-white border border-gray-700 w-full h-11 flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg">
+                    <Button onClick={googleLogin} className="bg-gray-900 hover:bg-gray-800 text-white border border-gray-700 w-full h-11 flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg">
                         <FcGoogle className="h-5 w-5" />
                         <span className="font-medium">Sign in with Google</span>
                     </Button>
                 </div>
-                
+
                 <DialogFooter className="flex justify-center items-center mt-4 pt-3 border-t border-gray-800">
                     <span className="text-xs text-center text-gray-500 max-w-xs mx-auto">
                         {Lookups.SIGNIn_AGREEMENT_TEXT}
