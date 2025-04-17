@@ -6,7 +6,7 @@ import Colors from "@/data/Colors";
 import Lookups from "@/data/Lookups";
 import Prompt from "@/data/Prompt";
 import axios from "axios";
-import { useConvex } from "convex/react";
+import { useConvex, useMutation } from "convex/react";
 import { ArrowRight, Link, Loader2Icon } from "lucide-react";
 import Image from "next/image";
 // import Link from 'next/link';
@@ -21,6 +21,7 @@ const ChatView = () => {
   const { messages, setMessages } = useContext(MessagesContext);
   const [userInput, setUserInput] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const UpdateMessages = useMutation(api.workspace.UpdateMessages)
 
   useEffect(() => {
     id && GetWorkspaceData();
@@ -48,15 +49,22 @@ const ChatView = () => {
   const GetAiResponse = async () => {
     setLoading(true);
     const PROPMT = JSON.stringify(messages) + Prompt.CHAT_PROMPT;
-    // console.log("Prompt", PROPMT);
     const result = await axios.post("/api/ai-chat", {
       prompt: PROPMT,
     });
     console.log("AI Response", result.data.result);
-    setMessages((prev) => [
-      ...prev,
-      { role: "AI", content: result.data.result },
-    ]);
+
+    const aiRes = {
+        role: "AI",
+        content: result.data.result,
+    }
+
+    setMessages((prev) => [...prev,aiRes ]);
+
+    await UpdateMessages({
+        messages:[...messages,aiRes],
+        workspaceId:id
+    })
     setLoading(false);
   };
 
@@ -67,6 +75,7 @@ const ChatView = () => {
             ...prev,
             { role: "user", content: input },
         ]); // Add user message to messages
+        setUserInput(""); // Clear input field
    }
   return (
     <div className="relative h-[79vh] flex flex-col">
@@ -108,6 +117,7 @@ const ChatView = () => {
       >
         <div className="relative flex items-center">
           <textarea
+            value={userInput}
             className="outline-none bg-transparent w-full h-24 md:h-30 max-h-56 resize-none text-sm md:text-base placeholder:text-gray-500"
             placeholder={Lookups.INPUT_PLACEHOLDER}
             onChange={(event) => setUserInput(event.target.value)}
