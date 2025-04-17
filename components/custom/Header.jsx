@@ -1,10 +1,14 @@
 "use client";
 import Image from 'next/image'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button } from '../ui/button'
 import Colors from '@/data/Colors'
+import { UserDetailContext } from '@/context/UserDetailContext';
 
 const Header = () => {
+  const { userDetail, setUserDetail } = useContext(UserDetailContext)
+
+
   return (
     <div className='p-3 flex justify-between items-center'>
       <Image
@@ -14,14 +18,15 @@ const Header = () => {
         height={80}
         priority
       />
-      <div className='flex gap-5'>
+      
+      {!userDetail.name &&  <div className='flex gap-5'>
         <Button variant="ghost">Sign In</Button>
-        <Button 
-        className="text-white"
-        style={{
-          backgroundColor: Colors.BLUE
-        }}>Get Started</Button>
-      </div>
+        <Button
+          className="text-white"
+          style={{
+            backgroundColor: Colors.BLUE
+          }}>Get Started</Button>
+      </div>}
     </div>
   )
 }
