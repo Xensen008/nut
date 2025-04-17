@@ -59,18 +59,19 @@ const ChatView = () => {
                     backgroundColor: Colors.BACKGROUND
                 }}
             >
-                <textarea
-                    className="outline-none bg-transparent w-full h-24 md:h-30 max-h-56 resize-none text-sm md:text-base placeholder:text-gray-500"
-                    placeholder={Lookups.INPUT_PLACEHOLDER}
-                    onChange={(event) => setUserInput(event.target.value)}
-                />
-                {userInput && (
-                    <ArrowRight
-                        onClick={() => onGenerate(userInput)}
-                        className="bg-blue-600 hover:bg-blue-500 p-2 sm:p-3 h-8 w-8 rounded-md cursor-pointer text-white transition-all duration-300 transform hover:scale-105 flex-shrink-0 mt-1"
+                <div className="relative flex items-center">
+                    <textarea
+                        className="outline-none bg-transparent w-full h-24 md:h-30 max-h-56 resize-none text-sm md:text-base placeholder:text-gray-500"
+                        placeholder={Lookups.INPUT_PLACEHOLDER}
+                        onChange={(event) => setUserInput(event.target.value)}
                     />
-
-                )}
+                    {userInput && (
+                        <ArrowRight
+                            onClick={() => onGenerate(userInput)}
+                            className="absolute right-0 bottom-0 bg-blue-600 hover:bg-blue-500 p-2 sm:p-3 h-8 w-8 rounded-md cursor-pointer text-white transition-all duration-300 transform hover:scale-105 flex-shrink-0"
+                        />
+                    )}
+                </div>
                 <div className="mt-2 flex items-center">
                     <Link className="h-4 w-4 text-gray-400 mr-2" />
                     <span className="text-xs text-gray-500">Paste a link or type your request</span>
