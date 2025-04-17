@@ -8,7 +8,6 @@ import { UserDetailContext } from '@/context/UserDetailContext';
 const Header = () => {
   const { userDetail, setUserDetail } = useContext(UserDetailContext)
 
-
   return (
     <div className='p-3 flex justify-between items-center'>
       <Image
@@ -19,7 +18,7 @@ const Header = () => {
         priority
       />
       
-      {!userDetail.name &&  <div className='flex gap-5'>
+      {userDetail && !userDetail?.name &&  <div className='flex gap-5'>
         <Button variant="ghost">Sign In</Button>
         <Button
           className="text-white"
