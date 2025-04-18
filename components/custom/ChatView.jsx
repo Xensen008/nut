@@ -9,13 +9,14 @@ import axios from "axios";
 import { useConvex, useMutation } from "convex/react";
 import { ArrowRight, Link, Loader2Icon } from "lucide-react";
 import Image from "next/image";
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 // import Link from 'next/link';
 import { useParams } from "next/navigation";
 import React, { useContext, useEffect } from "react";
 
 const ChatView = () => {
   const { id } = useParams();
-  // console.log("ID", id)
   const convex = useConvex();
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
   const { messages, setMessages } = useContext(MessagesContext);
@@ -97,7 +98,11 @@ const ChatView = () => {
                 className="rounded-full"
               />
             )}
-            <h2>{msg?.content}</h2>
+            <div className="prose prose-invert max-w-none">
+              <Markdown remarkPlugins={[remarkGfm]}>
+                {msg?.content}
+              </Markdown>
+            </div>
           </div>
         ))}
         {loading && <div style={{

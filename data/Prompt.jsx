@@ -8,7 +8,6 @@ export default{
   - speak like a human
   - Use simple language and short sentences.
   - response less than 15 lines.
-  - Dont use Bullets or numbering only paragraphs. 
   - Skip code examples and commentary'
 `,
 
